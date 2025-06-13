@@ -7,35 +7,35 @@ A simple reinforcement learning environment for a 1D "Catch the Falling Object" 
 Catch Game RL is a reinforcement learning project that simulates a 1D game where an agent learns to catch a falling object using the Q-learning algorithm. The purpose of this library is to demonstrate fundamental reinforcement learning concepts in a simple, interpretable environment.
 
 It is ideal for:
-	•	Beginners learning reinforcement learning
-	•	Educators demonstrating Q-learning
-	•	Developers experimenting with RL strategies in a minimal setup
+- Beginners learning reinforcement learning
+- Educators demonstrating Q-learning
+- Developers experimenting with RL strategies in a minimal setup
 
 
 ## ⚙️ Functionality
 
 The project provides:
-	•	A grid-based game environment (CatchEnvironment) where an object falls and a basket moves to catch it.
-	•	A Q-learning agent (QLearningAgent) that learns to optimize its actions via reward feedback.
-	•	Visualization of agent performance using matplotlib.
-	•	Console-based simulation of trained policies for quick feedback.
+- A grid-based game environment (CatchEnvironment) where an object falls and a basket moves to catch it.
+- A Q-learning agent (QLearningAgent) that learns to optimize its actions via reward feedback.
+- Visualization of agent performance using matplotlib.
+- Console-based simulation of trained policies for quick feedback.
 
 Key Features
-	•	Temporal state representation
-	•	Epsilon-greedy exploration with decay
-	•	Training and testing modes
-	•	Graphical plotting of results
-	•	Easily extendable design
+- Temporal state representation
+- Epsilon-greedy exploration with decay
+- Training and testing modes
+- Graphical plotting of results
+- Easily extendable design
 
 
 ## 💻 System Requirements
 
 To run this project, you’ll need:
-	•	Python ≥ 3.7
-	•	Visual Studio Code (VS Code)
-	•	The following Python packages:
-	•	numpy
-	•	matplotlib
+- Python ≥ 3.7
+- Visual Studio Code (VS Code)
+- The following Python packages:
+   - numpy
+   - matplotlib
 
 
 ## 🛠️ Installation Guide for Visual Studio Code (VS Code)
@@ -45,8 +45,8 @@ Step 1: Install Visual Studio Code
 Download and install VS Code from: https://code.visualstudio.com
 
 Step 2: Install Python and Git
-	•	Download Python from: https://www.python.org/downloads/
-	•	Install Git from: https://git-scm.com
+- Download Python from: https://www.python.org/downloads/
+- Install Git from: https://git-scm.com
 
 Ensure both are added to your system PATH.
 
