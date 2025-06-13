@@ -28,7 +28,7 @@ Usage:
 ------
 Simply run the script to train the agent, view animated test episodes,
 and plot the learning progress.
-See the example in `examples/run_training.py`.
+See the example in `run_training.py`.
 
 ## Installation
 
