@@ -37,4 +37,33 @@ pip install -e .
 ```
 
 
-MIT
+## How the Code Works
+Environment Setup:
+
+The CatchEnvironment class creates the grid and handles the falling object and basket movements.
+It also calculates rewards based on whether the basket catches the object.
+Agent's Brain:
+
+The QLearningAgent class is the agent's "brain."
+It uses a table (called a Q-table) to store information about the best moves for different situations.
+The agent updates this table as it plays the game and learns.
+Training the Agent:
+
+The agent plays the game thousands of times (EPISODES = 2000).
+During each game, it tries different moves, observes the rewards, and updates its Q-table to improve.
+Testing the Agent:
+
+After training, the agent plays a few test games to show how well it has learned.
+You can watch the basket move and see whether it catches the object.
+Visualizing Progress:
+
+The code plots a graph showing how the agent's success rate improves over time.
+
+## Analogy
+Think of the agent as a child learning to catch a ball:
+
+At first, the child randomly moves their hands and misses the ball.
+Each time they catch the ball, they remember what worked (positive reward).
+Over time, they learn to position their hands correctly to catch the ball more often.
+Why This is Cool
+Reinforcement learning is a way for computers to learn from experience, just like humans do. This simple game demonstrates how an agent can learn to make decisions without being explicitly told what to do.
