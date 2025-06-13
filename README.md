@@ -1,4 +1,4 @@
-# Catch Game RL
+# Catch Game based on reinforcement learning
 
 A simple reinforcement learning environment for a 1D "Catch the Falling Object" game using Q-learning.
 
