@@ -1,46 +1,8 @@
-"""
-Q-Learning Catch Game
----------------------
-
-This script implements a simple reinforcement learning agent using the Q-learning algorithm
-to solve a 1D grid-based "Catch the Falling Object" game.
-
-The environment is a vertical grid where a single object falls from the top to the bottom
-over a series of time steps. At the bottom row, a basket can move left, right, or stay in
-place to catch the falling object. The agent is trained to learn optimal movements of the 
-basket to maximize successful catches.
-
-Key Features:
--------------
-- Q-learning algorithm with temporal state representation.
-- Epsilon-greedy exploration strategy with decay.
-- Modular design with CatchEnvironment and QLearningAgent classes.
-- Console-based animation for testing the learned policy.
-- Performance tracking and visualization using matplotlib.
-
-Dependencies:
--------------
-- numpy
-- matplotlib
-- Python 3.x standard libraries (random, time, os, collections)
-
-Usage:
-------
-Simply run the script to train the agent, view animated test episodes,
-and plot the learning progress.
-
-Author: <Your Name>
-Date: <Date>
-"""
-
-
-
-
 import numpy as np
 import random
 import time
-import os
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle, Circle
 from collections import defaultdict
 
 # Environment settings
@@ -49,27 +11,11 @@ HEIGHT = 6
 ACTIONS = [-1, 0, 1]  # Left, Stay, Right
 
 # Q-learning parameters
-EPISODES = 2000
 ALPHA = 0.1
 GAMMA = 0.95
 EPSILON = 1.0
 MIN_EPSILON = 0.01
 DECAY_RATE = 0.995
-
-
-def clear_console():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-
-def render_environment(object_x, basket_x, height, current_step):
-    clear_console()
-    for row in range(height):
-        line = [" "] * WIDTH
-        if row == current_step:
-            line[object_x] = "*"
-        elif row == height - 1 and current_step == height - 1:
-            line[basket_x] = "^"
-        print("".join(line))
 
 
 class CatchEnvironment:
@@ -116,65 +62,148 @@ class QLearningAgent:
 
     def update(self, state, action, reward, next_state):
         max_next_q = max(self.q_table[next_state])
-        self.q_table[state][action] += self.alpha * (reward + self.gamma * max_next_q - self.q_table[state][action])
+        self.q_table[state][action] += self.alpha * (
+            reward + self.gamma * max_next_q - self.q_table[state][action]
+        )
 
 
-# Training the agent
-env = CatchEnvironment(WIDTH, HEIGHT)
-agent = QLearningAgent(ACTIONS, ALPHA, GAMMA, EPSILON)
-results = []
-success_counter = 0
+def render_game(object_x, basket_x, current_step, delay=0.3, message=None, status=None):
+    plt.clf()
+    ax = plt.gca()
+    ax.set_xlim(-0.5, WIDTH - 0.5)
+    ax.set_ylim(-0.5, HEIGHT - 0.5)
+    ax.set_xticks(range(WIDTH))
+    ax.set_yticks(range(HEIGHT))
+    ax.grid(True)
 
-for episode in range(1, EPISODES + 1):
-    state = env.reset()
-    done = False
+    obj = Circle((object_x, HEIGHT - 1 - current_step), 0.3, color='red')
+    ax.add_patch(obj)
 
-    while not done:
-        action = agent.choose_action(state)
-        next_state, reward, done = env.step(action)
-        agent.update(state, action, reward, next_state)
-        state = next_state
+    basket = Rectangle((basket_x - 0.4, -0.5), 0.8, 0.8, color='blue')
+    ax.add_patch(basket)
 
-    if reward == 1:
-        success_counter += 1
+    if message:
+        plt.text(0.5, 1.05, message, transform=ax.transAxes, ha='center', fontsize=12, color='green')
+    if status:
+        plt.text(0.5, 1.02, status, transform=ax.transAxes, ha='center', fontsize=10, color='purple')
 
-    if episode % 100 == 0:
-        results.append(success_counter)
-        success_counter = 0
+    plt.pause(delay)
 
-    agent.epsilon = max(MIN_EPSILON, agent.epsilon * DECAY_RATE)
 
-# Visual test after training
-def test_agent(agent, env, delay=0.4, games=3):
+def test_agent(agent, env, delay=0.3, games=5, episode_checkpoint=None):
+    plt.ion()
+    fig = plt.figure(figsize=(6, 6))
+
     for _ in range(games):
+        state = env.reset()
+        done = False
+        status = ""
+
+        while not done:
+            object_x, basket_x, current_step = state
+            render_game(object_x, basket_x, current_step, delay=delay,
+                        message=f"Episode: {episode_checkpoint}" if episode_checkpoint else None,
+                        status=status)
+
+            action = int(np.argmax(agent.q_table[state]))
+            state, reward, done = env.step(action)
+
+            if done:
+                status = "🎯 Caught!" if reward == 1 else "❌ Missed!"
+                render_game(*state, delay=delay,
+                            message=f"Episode: {episode_checkpoint}" if episode_checkpoint else None,
+                            status=status)
+                time.sleep(1)
+                break
+
+    plt.ioff()
+    plt.close()
+
+
+def plot_results(results, total_episodes):
+    plt.figure(figsize=(10, 5))
+    x_vals = [i * 100 for i in range(1, len(results) + 1)]
+    plt.plot(x_vals, results, marker='o')
+    plt.title(f"Learning Progress of Q-Learning Agent")
+    plt.xlabel("Episodes")
+    plt.ylabel("Successful Catches (per 100 episodes)")
+    plt.text(0.95, 0.95, f"Total Episodes: {total_episodes}", ha='right', va='top', transform=plt.gca().transAxes, fontsize=10, bbox=dict(boxstyle='round,pad=0.3', fc='yellow', ec='black', lw=1))
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+
+def train_agent(episodes, play_interval, test_games, agent=None, env=None):
+    if env is None:
+        env = CatchEnvironment(WIDTH, HEIGHT)
+    if agent is None:
+        agent = QLearningAgent(ACTIONS, ALPHA, GAMMA, EPSILON)
+
+    results = []
+    success_counter = 0
+
+    for episode in range(1, episodes + 1):
         state = env.reset()
         done = False
 
         while not done:
-            object_x, basket_x, current_step = state
-            render_environment(object_x, basket_x, env.height, current_step)
+            action = agent.choose_action(state)
+            next_state, reward, done = env.step(action)
+            agent.update(state, action, reward, next_state)
+            state = next_state
 
-            action = int(np.argmax(agent.q_table[state]))
-            state, _, done = env.step(action)
-            time.sleep(delay)
+        if reward == 1:
+            success_counter += 1
 
-        object_x, basket_x, current_step = state
-        render_environment(object_x, basket_x, env.height, current_step)
-        if basket_x == object_x:
-            print("\n🎯 Caught the object!")
+        if episode % 100 == 0:
+            results.append(success_counter)
+            success_counter = 0
+
+        if episode % play_interval == 0:
+            test_agent(agent, env, games=test_games, episode_checkpoint=episode)
+
+        agent.epsilon = max(MIN_EPSILON, agent.epsilon * DECAY_RATE)
+
+    return agent, env, results
+
+
+def main_menu():
+    agent = None
+    env = None
+    results = []
+
+    while True:
+        print("\n🎮 Q-Learning Catch Game (Matplotlib Version)")
+        print("1. Train with live checkpoints")
+        print("2. Restart simulation")
+        print("3. Exit")
+        choice = input("Enter your choice: ").strip()
+
+        if choice == "1":
+            try:
+                episodes = int(input("Enter total number of training episodes (e.g. 2000): "))
+                play_interval = int(input("Enter interval between test runs (e.g. 500): "))
+                test_games = int(input("Enter number of games to display at each test (e.g. 3): "))
+                agent, env, results = train_agent(episodes, play_interval, test_games, agent, env)
+                print("\n🏁 Final test after training:")
+                test_agent(agent, env, games=test_games, episode_checkpoint=episodes)
+                plot_results(results, total_episodes=episodes)
+            except ValueError:
+                print("Invalid input. Please enter integer values.")
+
+        elif choice == "2":
+            print("\n🔄 Restarting simulation from scratch...")
+            agent = None
+            env = None
+            results = []
+
+        elif choice == "3":
+            print("Goodbye!")
+            break
+
         else:
-            print("\n❌ Missed the object.")
-        time.sleep(1.5)
+            print("Invalid choice. Try again.")
 
-# Run test
-test_agent(agent, env)
 
-# Plotting results
-plt.figure(figsize=(10, 5))
-plt.plot([i * 100 for i in range(1, len(results) + 1)], results, marker='o')
-plt.title("Learning Progress of Q-Learning Agent")
-plt.xlabel("Episodes")
-plt.ylabel("Successful Catches (per 100 episodes)")
-plt.grid(True)
-plt.tight_layout()
-plt.show()
+if __name__ == "__main__":
+    main_menu()
