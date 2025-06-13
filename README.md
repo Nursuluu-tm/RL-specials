@@ -53,8 +53,8 @@ Ensure both are added to your system PATH.
 Step 3: Clone or Download the Project
 
 If you downloaded the ZIP:
-	1.	Unzip the file
-	2.	Open the folder in VS Code:
+1. Unzip the file
+1. Open the folder in VS Code:
 
 File → Open Folder → Select "catch_game_rl"
 
@@ -67,8 +67,8 @@ code .
 Step 4: Set Up the Python Environment
 
 In VS Code:
-	1.	Open the terminal (Ctrl + `` )
-	2.	Create a virtual environment:
+1. Open the terminal (Ctrl + `` )
+1. Create a virtual environment:
 
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\\Scripts\\activate
@@ -93,7 +93,7 @@ If prompted, install the Python extension for VS Code from Microsoft. It provide
 
 Run the example training script:
 
-python examples/run_training.py
+python run_training.py
 
 You’ll see training output in the console and performance plots at the end.
 
