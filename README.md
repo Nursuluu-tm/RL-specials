@@ -27,7 +27,6 @@ Key Features
 	•	Graphical plotting of results
 	•	Easily extendable design
 
-⸻
 
 ## 💻 System Requirements
 
@@ -38,7 +37,6 @@ To run this project, you’ll need:
 	•	numpy
 	•	matplotlib
 
-⸻
 
 ## 🛠️ Installation Guide for Visual Studio Code (VS Code)
 
@@ -90,7 +88,6 @@ If prompted, install the Python extension for VS Code from Microsoft. It provide
 	•	Virtual environment detection
 	•	Debugging tools
 
-⸻
 
 ## 🚀 Run the Example
 
