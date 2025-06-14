@@ -83,10 +83,10 @@ pip install -e .
 Step 5: Install VS Code Python Extension
 
 If prompted, install the Python extension for VS Code from Microsoft. It provides:
-	•	IntelliSense
-	•	Code navigation
-	•	Virtual environment detection
-	•	Debugging tools
+- IntelliSense
+- Code navigation
+- Virtual environment detection
+- Debugging tools
 
 
 ## 🚀 Run the Example
